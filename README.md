@@ -1,4 +1,4 @@
-# reveal.js-themeoverride
+# ThemeOverride
 
 A [reveal.js](https://github.com/hakimel/reveal.js/) plugin to override the themes of reveal.js and highlight.js with an URI query parameter or from inside of your configuration.
 
