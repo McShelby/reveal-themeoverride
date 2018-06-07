@@ -109,6 +109,6 @@ ThemeOverride.configure({
 
 ## License
 
-[WTFPL licensed](http://www.wtfpl.net/).
+[MIT licensed](https://en.wikipedia.org/wiki/MIT_License).
 
-Copyright (C) 2018 [Sören Weber](https://github.com/McShelby)
+Copyright (C) 2018 [Sören Weber](https://soeren-weber.de)
