@@ -1,10 +1,6 @@
 # ThemeOverride
 
-A [reveal.js](https://github.com/hakimel/reveal.js/) plugin to override the themes of reveal.js and highlight.js with an URI query parameter or from inside of your configuration.
-
-URI parameter come in handy if you just want to try out new themes without editing your presentation file. 
-
-Configuration parameter are useful if you have further plugins installed like [AltMode](https://github.com/McShelby/reveal-altmode) to toggle between different themes during your live presentation.
+A [reveal.js](https://github.com/hakimel/reveal.js/) plugin to easily change themes of reveal.js and its syntax highlightning.
 
 ## Installation
 
@@ -24,41 +20,35 @@ Reveal.initialize({
 
 To be able to override themes, you may need to edit your HTML file.
 
-- The reveal.js  ```<link>``` element needs an ```id``` attribute of ```theme```.
-- The highlight.js ```<link>``` element needs an ```id``` attribute of ```hljs-theme```.
+- The ```<link>``` element of the reveal.js theme needs an ```id``` attribute of ```theme```.
+- The ```<link>``` element of the syntax highlighting theme needs an ```id``` attribute of ```highlight-theme```.
 
 ```html
 <head>
 	...
 	<link rel="stylesheet" href="css/theme/black.css" id="theme">
-	<link rel="stylesheet" href="lib/css/zenburn.css" id="hljs-theme">
+	<link rel="stylesheet" href="lib/css/zenburn.css" id="highlight-theme">
 	...
 </head>
 ```
 
-The value for this ```id``` is not configurable. It must be ```theme``` and ```hljs-theme``` respectivly otherwise the plugin will not find the stylesheets in your presentation file.
+The value for this ```id``` is not configurable. It must be ```theme``` and ```highlight-theme``` respectivly otherwise the plugin will not find the stylesheets in your presentation file.
 
-Please remember that no other highlight.js themes besides ```zenburn.css``` are shipped with the standard reveal.js package. You may want to install further highlight.js themes from [https://highlightjs.org/](https://highlightjs.org/) into the ```lib/css/``` directory.
+Please remember that no other syntax highlightning themes besides ```zenburn.css``` are shipped with the standard reveal.js package. You may want to install further highlight.js themes from [https://highlightjs.org/](https://highlightjs.org/) into the ```lib/css/``` directory.
 
 ## Usage
 
 After installation theme settings are allowed in different places. The theme applied to your presentation is the first found from the following list:
 
 1. URI parameter
-1. Configuration parameter
+1. Configuration options
 1. ```<link>``` element
 
-### Parameter
+### Configuration
 
-URI and configuration parameter names are the same as the given ids from their ```<link>``` elements, namely ```theme``` and ```hljs-theme```. Their values may contain one of the following:
+You can configure some aspects of the plugin by adding the following options to your reveal configuration. Note that all configuration values are optional and will default to the settings from your link elements.
 
-- a style name (eg. ```serif```). The plugin will append ```.css``` to the name and tries to access the file from the directory ```css/theme``` (for reveal.js themes) or ```lib/css``` (for highlight.js themes) relative to your reveal.js installation.
-
-- a stylesheet filename (eg. ```serif.css```). The plugin will try to access the file from the directory ```css/theme``` (for reveal.js themes) or ```lib/css``` (for highlight.js themes) relative to your reveal.js installation.
-
-- a relative path with filename (eg. ```../my-reveal-addons/serif.css```). The plugin will try to access the file relative to your reveal.js installation.
-
-Because of the dash in the highlight.js id you have to put the name of its parameter into quotes.
+Configuration options are useful if you have further plugins installed like [AltMode](https://github.com/McShelby/reveal-altmode) to toggle between different themes during your live presentation.
 
 ```javascript
 Reveal.initialize({
@@ -68,30 +58,42 @@ Reveal.initialize({
 	// given value. If your presentation was copied from reveal.js
 	// demo.html, everything just works. Otherwise you need to
 	// set id="theme" on reveal.js theme <link> element.
-	theme: 'serif.css',
+	theme: 'serif',
 
-	// Overrides the highlight.js theme set in <link> element by the
-	// given value. This only works if you set id="hljs-theme" on the
+	// Overrides the syntax highlightning theme set in <link> element by the
+	// given value. This only works if you set id="highlight-theme" on the
 	// <link> element.
-	'hljs-theme': '../highlight/styles/monokai',
+	highlightTheme: 'monokai',
 });
 ```
 
-### URI parameter example
+### URI parameter
+
+URI parameter come in handy if you just want to try out new themes without editing your presentation file. 
 
 ```
-http://example.com/demo.html?theme=serif.css&hljs-theme=../highlight/styles/monokai
+http://example.com/demo.html?theme=serif&highlight-theme=monokai
 ```
+
+### Theme values
+
+Values for themes may contain one of the following:
+
+- a style name (eg. ```serif```). The plugin will append ```.css``` to the name and tries to access the file from the directory ```css/theme``` (for reveal.js themes) or ```lib/css``` (for syntax highlightning themes) relative to your reveal.js installation.
+
+- a stylesheet filename (eg. ```serif.css```). The plugin will try to access the file from the directory ```css/theme``` (for reveal.js themes) or ```lib/css``` (for syntax highlightning themes) relative to your reveal.js installation.
+
+- a relative path with filename (eg. ```css/theme/serif.css```). The plugin will try to access the file relative to your reveal.js installation.
 
 ## API
 
 ### CSS
 
-To apply style overrides depending on the displayed themes, the plugin will add the names of choosen themes to the ```<body>``` ```class``` attribute like:
+To apply style overrides depending on the displayed themes, the plugin will add the names of the active themes to the ```<body>``` ```class``` attribute like:
 
 ```html
 ...
-<body class="theme-serif hljs-theme-monokai"
+<body class="theme-serif highlight-theme-monokai"
 ...
 ```
 
@@ -102,8 +104,9 @@ The plugin API is accessible from the global ```ThemeOverride``` object.
 ```javascript
 // Change a config value at runtime
 ThemeOverride.configure({
+	// Takes the same options as for configuration
 	theme: 'serif.css',
-	'hljs-theme': '../highlight/styles/monokai',
+	highlightTheme: 'monokai',
 });
 ```
 

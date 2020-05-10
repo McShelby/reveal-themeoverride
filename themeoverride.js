@@ -6,9 +6,17 @@ var ThemeOverride = ( function( Reveal ){
 		option: 'theme',    // reveal configuration option name
 		path: 'css/theme/', // standard path to css file
 	},{
+		// deprecatved settings for compat, don't move this setting
+		// so our new settings will overwrite deprecated ones
 		id: 'hljs-theme',
 		parameter: 'hljs-theme',
 		option: 'hljs-theme',
+		path: 'lib/css/',
+	},{
+		// preparation for reveal 4.x
+		id: 'highlight-theme',
+		parameter: 'highlight-theme',
+		option: 'highlightTheme',
 		path: 'lib/css/',
 	}];
 
