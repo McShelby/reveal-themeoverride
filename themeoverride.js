@@ -66,15 +66,19 @@ var ThemeOverride = ( function( Reveal ){
 			if( c.id == 'theme' ){
 				console.error( '<link> element with id attribute ' + c.id + ' was not found in your HTML file.' );
 			}else if( theme && isHighlightJsUsed() ){
-				console.error( 'highlight.js stylesheet link not found in your HTML file. This usually happens when you haven\'t set the id "hljs-theme" to your highlight.js stylesheet link.' );
+				console.error( 'highlight.js stylesheet link not found in your HTML file. This usually happens when you haven\'t set the id "highlight-theme" on your syntax highlightning stylesheet link.' );
 			}
 			return;
+		}else if( c.id == 'hljs-theme' && theme && isHighlightJsUsed() ){
+			console.warn( 'You are using the deprecated "hljs-theme" id on your syntax highlightning stylesheet link. Instead use "highlight-theme".' );
 		}
 
-		var old_path = link.attributes.href && link.attributes.href.value;
 		if( !theme ){
+			// if someone hasn't set an configuration option we
+			// try to get the theme from our link element
 			theme = link.attributes.href && link.attributes.href.value;
 		}
+
 		if( theme ){
 			if( !theme.match( /\.css$/i ) ){
 				theme += '.css';
@@ -92,8 +96,19 @@ var ThemeOverride = ( function( Reveal ){
 			config[ c.option ] = path;
 			Reveal.configure( config );
 
-			// set the new stylesheet
-			if( !link.attributes.href || link.attributes.href.value != path ){
+			var body = document.querySelector( 'body' );
+			var old_name = body.getAttribute( 'data-' + c.id );
+			if( !old_name ){
+				// if we are coming here for the first time, we
+				// do not have a data-attribute; so just read the
+				// previous theme name form the link element directly
+				var old_path = link.attributes.href && link.attributes.href.value;
+				old_name = old_path.replace( /.*?([^/]+)\.css$/i, '$1' );
+			}
+
+			var name = path.replace( /.*?([^/]+)\.css$/i, '$1' );
+			if( old_name != name ){
+				// set the new stylesheet
 				setTimeout( function(){
 					// FF 74: After switching a theme using the AltMode plugin during
 					// runtime, we experience layout issues with to much top
@@ -103,12 +118,7 @@ var ThemeOverride = ( function( Reveal ){
 			}
 
 			// set theme class on body element
-			var old_name = old_path.replace( /.*?([^/]+)\.css$/i, '$1' );
-			var name = path.replace( /.*?([^/]+)\.css$/i, '$1' );
-			if( old_name != name ){
-				document.querySelector( 'body' ).classList.remove( c.id + '-' + old_name );
-			}
-			document.querySelector( 'body' ).classList.add( c.id + '-' + name );
+			body.setAttribute( 'data-' + c.id, name );
 		}
 	}
 

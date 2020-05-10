@@ -89,11 +89,11 @@ Values for themes may contain one of the following:
 
 ### CSS
 
-To apply style overrides depending on the displayed themes, the plugin will add the names of the active themes to the ```<body>``` ```class``` attribute like:
+To apply style overrides depending on the displayed themes, the plugin will add data attributes with the names of the active themes as values to the ```<body>``` element like:
 
 ```html
 ...
-<body class="theme-serif highlight-theme-monokai"
+<body data-theme="serif" data-highlight-theme="monokai">
 ...
 ```
 
