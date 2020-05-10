@@ -65,7 +65,7 @@ var ThemeOverride = ( function( Reveal ){
 		if( !link ){
 			if( c.id == 'theme' ){
 				console.error( '<link> element with id attribute ' + c.id + ' was not found in your HTML file.' );
-			}else if( isHighlightJsUsed() ){
+			}else if( theme && isHighlightJsUsed() ){
 				console.error( 'highlight.js stylesheet link not found in your HTML file. This usually happens when you haven\'t set the id "hljs-theme" to your highlight.js stylesheet link.' );
 			}
 			return;
