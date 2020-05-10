@@ -1,5 +1,17 @@
 var ThemeOverride = ( function( Reveal ){
 
+	var constants = [{
+		id: 'theme',        // id attribute of link element
+		parameter: 'theme', // URL parameter name
+		option: 'theme',    // reveal configuration option name
+		path: 'css/theme/', // standard path to css file
+	},{
+		id: 'hljs-theme',
+		parameter: 'hljs-theme',
+		option: 'hljs-theme',
+		path: 'lib/css/',
+	}];
+
 	function isHighlightJsUsed(){
 		var regex = /\bhighlight.js$/i;
 		var script = Array.from( document.querySelectorAll( 'script' ) ).find( function( e ){
@@ -20,11 +32,11 @@ var ThemeOverride = ( function( Reveal ){
 		return script.attributes.src.value.replace( regex, '' );
 	}
 
-	function applyThemeInternal( link_selector, default_path, theme ){
-		var link = document.querySelector( '#' + link_selector );
+	function applyTheme( c, theme ){
+		var link = document.querySelector( '#' + c.id );
 		if( !link ){
-			if( link_selector != 'hljs-theme' ){
-				console.error( '<link> element with id attribute ' + link_selector + ' was not found in your HTML file.' );
+			if( c.id == 'theme' ){
+				console.error( '<link> element with id attribute ' + c.id + ' was not found in your HTML file.' );
 			}else if( isHighlightJsUsed() ){
 				console.error( 'highlight.js stylesheet link not found in your HTML file. This usually happens when you haven\'t set the id "hljs-theme" to your highlight.js stylesheet link.' );
 			}
@@ -39,61 +51,57 @@ var ThemeOverride = ( function( Reveal ){
 			if( !theme.match( /\.css$/i ) ){
 				theme += '.css';
 			}
-			var path = default_path + theme;
+			var path = c.path + theme;
 			if( theme.match( /\// ) ){
 				path = theme;
 			}else{
 				path = getRevealJsPath() + path;
 			}
 
-			var settings = {};
-			settings[ link_selector ] = path;
-			Reveal.configure( settings );
+			// echo our new setting into the reveal configuration
+			// to make it available for other plugins
+			var config = {};
+			config[ c.option ] = path;
+			Reveal.configure( config );
+
+			// set the new stylesheet
 			if( !link.attributes.href || link.attributes.href.value != path ){
 				link.setAttribute( 'href', path );
 			}
 
+			// set theme class on body element
 			var old_name = old_path.replace( /.*?([^/]+)\.css$/i, '$1' );
 			var name = path.replace( /.*?([^/]+)\.css$/i, '$1' );
 			if( old_name != name ){
-				document.querySelector( 'body' ).classList.remove( link_selector + '-' + old_name );
+				document.querySelector( 'body' ).classList.remove( c.id + '-' + old_name );
 			}
-			document.querySelector( 'body' ).classList.add( link_selector + '-' + name );
+			document.querySelector( 'body' ).classList.add( c.id + '-' + name );
 		}
 	}
 
-	function applyTheme( theme ){
-		applyThemeInternal( 'theme', 'css/theme/', theme );
+	function applyThemeConfig( c, o ){
+		if( !o || o !== Object(o) ){
+			return;
+		}
+		applyTheme( c, o[ c.option ] );
 	}
 
-	function applyThemeParameter(){
+	function applyThemeParameter( c ){
 		var url_doc = new URL( document.URL );
 		var query_doc = new URLSearchParams( url_doc.searchParams );
-		applyTheme( query_doc.get( 'theme' ) );
-	}
-
-	function applyHljsTheme( theme ){
-		applyThemeInternal( 'hljs-theme', 'lib/css/', theme );
-	}
-
-	function applyHljsThemeParameter(){
-		var url_doc = new URL( document.URL );
-		var query_doc = new URLSearchParams( url_doc.searchParams );
-		applyHljsTheme( query_doc.get( 'hljs-theme' ) );
+		applyTheme( c, query_doc.get( c.parameter ) );
 	}
 
 	function configure( o ){
-		if( o && o.theme !== undefined ){
-			applyTheme( o && o[ 'theme' ] );
-		}
-		if( o && o[ 'hljs-theme' ] !== undefined ){
-			applyHljsTheme( o && o[ 'hljs-theme' ] );
-		}
+		constants.forEach( function( c ){
+			applyThemeConfig( c, o );
+		});
 	}
 
 	function install(){
-		applyThemeParameter();
-		applyHljsThemeParameter();
+		constants.forEach( function( c ){
+			applyThemeParameter( c );
+		});
 	}
 
 	install();
