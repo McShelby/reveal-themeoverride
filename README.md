@@ -114,4 +114,4 @@ ThemeOverride.configure({
 
 [MIT licensed](https://en.wikipedia.org/wiki/MIT_License).
 
-Copyright (C) 2018 [Sören Weber](https://soeren-weber.de)
+Copyright (C) 2020 [Sören Weber](https://soeren-weber.de)
