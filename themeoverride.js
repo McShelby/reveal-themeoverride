@@ -20,6 +20,26 @@ var ThemeOverride = ( function( Reveal ){
 		path: 'lib/css/',
 	}];
 
+	function getFixedRevealConfig(){
+		// fix reveals inaccurate transfer of URI paramter into
+		// the config options; it removes the last dash and anything
+		// before it from a parameter name
+		var o = Reveal.getConfig();
+		var url_doc = new URL( document.URL );
+		var query_doc = new URLSearchParams( url_doc.searchParams );
+		constants.forEach( function( c ){
+			var i = c.parameter.lastIndexOf( '-' );
+			var q = query_doc.get( c.parameter );
+			if( i != -1 && q ){
+				var false_parameter_name = c.parameter.substring( i+1 );
+				if( o[ false_parameter_name ] == q ){
+					delete o[ false_parameter_name ];
+				}
+			}
+		});
+		return o;
+	}
+
 	function isHighlightJsUsed(){
 		var regex = /\bhighlight.js$/i;
 		var script = Array.from( document.querySelectorAll( 'script' ) ).find( function( e ){
@@ -94,10 +114,10 @@ var ThemeOverride = ( function( Reveal ){
 		applyTheme( c, o[ c.option ] );
 	}
 
-	function applyThemeParameter( c ){
+	function applyThemeParameter( c, o ){
 		var url_doc = new URL( document.URL );
 		var query_doc = new URLSearchParams( url_doc.searchParams );
-		applyTheme( c, query_doc.get( c.parameter ) );
+		applyTheme( c, query_doc.get( c.parameter ) || o[ c.option ] );
 	}
 
 	function configure( o ){
@@ -107,8 +127,9 @@ var ThemeOverride = ( function( Reveal ){
 	}
 
 	function install(){
+		var o = getFixedRevealConfig();
 		constants.forEach( function( c ){
-			applyThemeParameter( c );
+			applyThemeParameter( c, o );
 		});
 	}
 
