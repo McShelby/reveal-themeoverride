@@ -94,7 +94,12 @@ var ThemeOverride = ( function( Reveal ){
 
 			// set the new stylesheet
 			if( !link.attributes.href || link.attributes.href.value != path ){
-				link.setAttribute( 'href', path );
+				setTimeout( function(){
+					// FF 74: After switching a theme using the AltMode plugin during
+					// runtime, we experience layout issues with to much top
+					// margin; decoupling the switching seems to help
+					link.setAttribute( 'href', path );
+				}, 0 );
 			}
 
 			// set theme class on body element
