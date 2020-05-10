@@ -15,7 +15,7 @@ var ThemeOverride = ( function( Reveal ){
 	},{
 		// preparation for reveal 4.x
 		id: 'highlight-theme',
-		parameter: 'highlight-theme',
+		parameter: 'highlightTheme',
 		option: 'highlightTheme',
 		path: 'lib/css/',
 	}];

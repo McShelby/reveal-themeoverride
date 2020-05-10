@@ -72,7 +72,7 @@ Reveal.initialize({
 URI parameter come in handy if you just want to try out new themes without editing your presentation file. 
 
 ```
-http://example.com/demo.html?theme=serif&highlight-theme=monokai
+http://example.com/demo.html?theme=serif&highlightTheme=monokai
 ```
 
 ### Theme values
