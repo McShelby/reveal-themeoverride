@@ -1,7 +1,7 @@
 var ThemeOverride = ( function( Reveal ){
 
 	function isHighlightJsUsed(){
-		var regex = /\/highlight.js$/i;
+		var regex = /\bhighlight.js$/i;
 		var script = Array.from( document.querySelectorAll( 'script' ) ).find( function( e ){
 			return e.attributes.src && e.attributes.src.value.search( regex ) >= 0;
 		});
@@ -9,7 +9,7 @@ var ThemeOverride = ( function( Reveal ){
 	}
 
 	function getRevealJsPath(){
-		var regex = /\/js\/reveal.js$/i;
+		var regex = /\bjs\/reveal.js$/i;
 		var script = Array.from( document.querySelectorAll( 'script' ) ).find( function( e ){
 			return e.attributes.src && e.attributes.src.value.search( regex ) >= 0;
 		});
@@ -43,7 +43,7 @@ var ThemeOverride = ( function( Reveal ){
 			if( theme.match( /\// ) ){
 				path = theme;
 			}else{
-				path = getRevealJsPath() + '/' + path;
+				path = getRevealJsPath() + path;
 			}
 
 			var settings = {};
