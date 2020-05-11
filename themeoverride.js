@@ -1,10 +1,12 @@
-var ThemeOverride = ( function( Reveal ){
+var ThemeOverride = ( function( _Reveal ){
 
+	var Reveal = _Reveal;
+	var isHighlightJsUsed = null;
 	var constants = [{
 		id: 'theme',        // id attribute of link element
 		parameter: 'theme', // URL parameter name
 		option: 'theme',    // reveal configuration option name
-		path: 'css/theme/', // standard path to css file
+		path: null, // standard path to css file - dependend on reveal version
 	},{
 		// deprecatved settings for compat, don't move this setting
 		// so our new settings will overwrite deprecated ones
@@ -40,7 +42,7 @@ var ThemeOverride = ( function( Reveal ){
 		return o;
 	}
 
-	function isHighlightJsUsed(){
+	function isHighlightJsUsed3(){
 		var regex = /\bhighlight.js$/i;
 		var script = Array.from( document.querySelectorAll( 'script' ) ).find( function( e ){
 			return e.attributes.src && e.attributes.src.value.search( regex ) >= 0;
@@ -48,16 +50,20 @@ var ThemeOverride = ( function( Reveal ){
 		return !!script;
 	}
 
+	function isHighlightJsUsed4(){
+		return Reveal.hasPlugin( 'highlight' );
+	}
+
 	function getRevealJsPath(){
-		var regex = /\bjs\/reveal.js$/i;
-		var script = Array.from( document.querySelectorAll( 'script' ) ).find( function( e ){
-			return e.attributes.src && e.attributes.src.value.search( regex ) >= 0;
+		var regex = /\b[^/]+\/reveal.css$/i;
+		var script = Array.from( document.querySelectorAll( 'link' ) ).find( function( e ){
+			return e.attributes.href && e.attributes.href.value.search( regex ) >= 0;
 		});
 		if( !script ){
-			console.error( 'reveal.js script could not be found in included <script> elements. Did you rename this file?' );
+			console.error( 'reveal.css could not be found in included <link> elements. Did you rename this file?' );
 			return '';
 		}
-		return script.attributes.src.value.replace( regex, '' );
+		return script.attributes.href.value.replace( regex, '' );
 	}
 
 	function applyTheme( c, theme ){
@@ -148,10 +154,26 @@ var ThemeOverride = ( function( Reveal ){
 		});
 	}
 
-	install();
-
-	return {
+	var Plugin = {
 		configure: configure
-	};
+	}
+
+	if( Reveal && Reveal.VERSION && Reveal.VERSION.length && Reveal.VERSION[ 0 ] == '3' ){
+		// reveal 3.x
+		isHighlightJsUsed = isHighlightJsUsed3;
+		constants[ 0 ].path = 'css/theme/';
+		install();
+	}else{
+		// must be reveal 4.x
+		isHighlightJsUsed = isHighlightJsUsed4;
+		constants[ 0 ].path = 'dist/theme/';
+		Plugin.id = 'theme-override';
+		Plugin.init = function( _Reveal ){
+			Reveal = _Reveal;
+			install();
+		};
+	}
+
+	return Plugin;
 
 })( Reveal );
