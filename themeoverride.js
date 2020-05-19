@@ -8,18 +8,18 @@ var ThemeOverride = ( function( _Reveal ){
 		option: 'theme',    // reveal configuration option name
 		path: null, // standard path to css file - dependend on reveal version
 	},{
-		// deprecatved settings for compat, don't move this setting
+		// deprecated settings for compat, don't move this setting
 		// so our new settings will overwrite deprecated ones
 		id: 'hljs-theme',
 		parameter: 'hljs-theme',
 		option: 'hljs-theme',
-		path: 'lib/css/',
+		path: null, // standard path to css file - dependend on reveal version
 	},{
 		// preparation for reveal 4.x
 		id: 'highlight-theme',
 		parameter: 'highlightTheme',
 		option: 'highlightTheme',
-		path: 'lib/css/',
+		path: null, // standard path to css file - dependend on reveal version
 	}];
 
 	function getFixedRevealConfig(){
@@ -120,7 +120,7 @@ var ThemeOverride = ( function( _Reveal ){
 					// runtime, we experience layout issues with to much top
 					// margin; decoupling the switching seems to help
 					link.setAttribute( 'href', path );
-				}, 0 );
+				}, 10 );
 			}
 
 			// set theme class on body element
@@ -162,11 +162,15 @@ var ThemeOverride = ( function( _Reveal ){
 		// reveal 3.x
 		isHighlightJsUsed = isHighlightJsUsed3;
 		constants[ 0 ].path = 'css/theme/';
+		constants[ 1 ].path = 'lib/css/';
+		constants[ 2 ].path = 'lib/css/';
 		install();
 	}else{
 		// must be reveal 4.x
 		isHighlightJsUsed = isHighlightJsUsed4;
 		constants[ 0 ].path = 'dist/theme/';
+		constants[ 1 ].path = 'plugin/highlight/';
+		constants[ 2 ].path = 'plugin/highlight/';
 		Plugin.id = 'theme-override';
 		Plugin.init = function( _Reveal ){
 			Reveal = _Reveal;
